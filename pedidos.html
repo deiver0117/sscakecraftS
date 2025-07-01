@@ -18,30 +18,54 @@
       background-color: var(--rosa-claro);
       margin: 0;
       padding: 0;
+      display: flex;
     }
 
-    header {
+    nav {
+      width: 200px;
       background-color: var(--rosa-oscuro);
+      padding: 20px;
+      height: 100vh;
+      box-sizing: border-box;
+      display: none;
+    }
+
+    nav h2 {
       color: white;
-      padding: 15px;
       text-align: center;
     }
 
+    nav ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    nav ul li {
+      margin: 15px 0;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
     main {
+      flex-grow: 1;
       padding: 20px;
-      max-width: 900px;
-      margin: auto;
     }
 
     h1, h2 {
       color: var(--rosa-oscuro);
     }
 
-    form {
+    form, .tabla-container {
       background: var(--blanco);
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin-top: 20px;
     }
 
     label {
@@ -73,7 +97,7 @@
 
     table {
       width: 100%;
-      margin-top: 30px;
+      margin-top: 20px;
       border-collapse: collapse;
       background-color: var(--blanco);
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -89,70 +113,88 @@
       background-color: var(--rosa-medio);
       color: white;
     }
+
+    #login-section {
+      margin: auto;
+      padding: 40px;
+      background: var(--blanco);
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin-top: 100px;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Registro de Pedidos - Sscakecraft</h1>
-  </header>
+  <nav id="nav-menu">
+    <h2>Sscakecraft</h2>
+    <ul>
+      <li><a href="#">Pedidos</a></li>
+      <li><a href="#">Productos</a></li>
+      <li><a href="#">Inventario</a></li>
+      <li><a href="#">Facturación</a></li>
+      <li><a href="#" onclick="location.reload()">Cerrar sesión</a></li>
+    </ul>
+  </nav>
+
   <main>
-    <form id="pedido-form">
-      <label>Nombre y Apellido del Cliente:</label>
-      <input type="text" id="cliente" required />
+    <section id="login-section">
+      <h1>Iniciar Sesión</h1>
+      <label>Usuario</label>
+      <input type="text" id="usuario" />
+      <label>Contraseña</label>
+      <input type="password" id="contrasena" />
+      <button onclick="login()">Entrar</button>
+    </section>
 
-      <label>Teléfono:</label>
-      <input type="tel" id="telefono" required />
+    <section id="admin-section" style="display:none">
+      <h1>Registro de Pedidos</h1>
+      <form id="pedido-form">
+        <label>Nombre y Apellido del Cliente:</label>
+        <input type="text" id="cliente" required />
+        <label>Teléfono:</label>
+        <input type="tel" id="telefono" required />
+        <label>Fecha del Pedido:</label>
+        <input type="date" id="fechaPedido" required />
+        <label>Forma de Pago:</label>
+        <select id="pago">
+          <option value="Efectivo">Efectivo</option>
+          <option value="Yappy">Yappy</option>
+        </select>
+        <label>Fecha y hora de entrega:</label>
+        <input type="datetime-local" id="entrega" required />
+        <label>Forma de Entrega:</label>
+        <select id="formaEntrega">
+          <option value="En local">En local</option>
+          <option value="Delivery">Delivery</option>
+        </select>
+        <label>Producto:</label>
+        <select id="producto" required></select>
+        <label>Cantidad:</label>
+        <input type="number" id="cantidad" value="1" min="1" required />
+        <label>Estado:</label>
+        <select id="estado">
+          <option value="En proceso">En proceso</option>
+          <option value="Listo para preparar">Listo para preparar</option>
+          <option value="Entregado">Entregado</option>
+        </select>
+        <button type="submit">Agregar Pedido</button>
+      </form>
+    </section>
 
-      <label>Fecha del Pedido:</label>
-      <input type="date" id="fechaPedido" required />
-
-      <label>Forma de Pago:</label>
-      <select id="pago">
-        <option value="Efectivo">Efectivo</option>
-        <option value="Yappy">Yappy</option>
-      </select>
-
-      <label>Fecha y hora de entrega:</label>
-      <input type="datetime-local" id="entrega" required />
-
-      <label>Forma de Entrega:</label>
-      <select id="formaEntrega">
-        <option value="En local">En local</option>
-        <option value="Delivery">Delivery</option>
-      </select>
-
-      <label>Producto:</label>
-      <input type="text" id="producto" required />
-
-      <label>Cantidad:</label>
-      <input type="number" id="cantidad" value="1" min="1" required />
-
-      <label>Estado:</label>
-      <select id="estado">
-        <option value="En proceso">En proceso</option>
-        <option value="Listo para preparar">Listo para preparar</option>
-        <option value="Entregado">Entregado</option>
-      </select>
-
-      <button type="submit">Agregar Pedido</button>
-    </form>
-
-    <h2>Pedidos Registrados</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Cliente</th>
-          <th>Teléfono</th>
-          <th>Entrega</th>
-          <th>Producto</th>
-          <th>Cantidad</th>
-          <th>Pago</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody id="tablaPedidos"></tbody>
-    </table>
+    <section id="tabla-section" class="tabla-container" style="display:none">
+      <h2>Pedidos Registrados</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody id="tablaPedidos"></tbody>
+      </table>
+    </section>
   </main>
 
   <script>
@@ -160,54 +202,70 @@
     let productos = JSON.parse(localStorage.getItem('productos')) || [];
 
     const selectProducto = document.getElementById('producto');
-    productos.forEach(p => {
-      const option = document.createElement('option');
-      option.value = p.tipo + ' - ' + p.tamaño;
-      option.textContent = `${p.tipo} (${p.tamaño}) - $${p.precio}`;
-      selectProducto.appendChild(option);
-    });
-
-    function renderPedidos() {
-      const tabla = document.getElementById('tablaPedidos');
-      tabla.innerHTML = '';
-      pedidos.forEach((p, index) => {
-        tabla.innerHTML += `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${p.cliente}</td>
-            <td>${p.telefono}</td>
-            <td>${p.entrega}</td>
-            <td>${p.producto}</td>
-            <td>${p.cantidad}</td>
-            <td>${p.pago}</td>
-            <td>${p.estado}</td>
-          </tr>`;
+    if (selectProducto) {
+      productos.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.tipo + ' - ' + p.tamaño;
+        option.textContent = `${p.tipo} (${p.tamaño}) - $${p.precio}`;
+        selectProducto.appendChild(option);
       });
     }
 
-    document.getElementById('pedido-form').addEventListener('submit', function (e) {
-      e.preventDefault();
+    function login() {
+      const user = document.getElementById('usuario').value;
+      const pass = document.getElementById('contrasena').value;
+      if (user === 'admin' && pass === 'admin123') {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('admin-section').style.display = 'block';
+        document.getElementById('tabla-section').style.display = 'block';
+        document.getElementById('nav-menu').style.display = 'block';
+        renderPedidos(true);
+      } else if (user === 'cocinero' && pass === 'cocinero123') {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('tabla-section').style.display = 'block';
+        document.getElementById('nav-menu').style.display = 'block';
+        renderPedidos(false);
+      } else {
+        alert('Usuario o contraseña incorrectos');
+      }
+    }
 
-      const nuevoPedido = {
-        cliente: document.getElementById('cliente').value,
-        telefono: document.getElementById('telefono').value,
-        fechaPedido: document.getElementById('fechaPedido').value,
-        pago: document.getElementById('pago').value,
-        entrega: document.getElementById('entrega').value,
-        formaEntrega: document.getElementById('formaEntrega').value,
-        producto: document.getElementById('producto').value,
-        cantidad: parseInt(document.getElementById('cantidad').value),
-        estado: document.getElementById('estado').value,
-      };
+    function renderPedidos(completo) {
+      const tabla = document.getElementById('tablaPedidos');
+      tabla.innerHTML = '';
+      pedidos.forEach((p, index) => {
+        if (p.estado === 'En proceso' || p.estado === 'Listo para preparar') {
+          tabla.innerHTML += `<tr>
+            <td>${index + 1}</td>
+            <td>${p.producto}</td>
+            <td>${p.cantidad}</td>
+          </tr>`;
+        }
+      });
+    }
 
-      pedidos.push(nuevoPedido);
-      localStorage.setItem('pedidos', JSON.stringify(pedidos));
-      this.reset();
-      renderPedidos();
-      alert('Pedido agregado con éxito');
-    });
-
-    renderPedidos();
+    const form = document.getElementById('pedido-form');
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const nuevoPedido = {
+          cliente: document.getElementById('cliente').value,
+          telefono: document.getElementById('telefono').value,
+          fechaPedido: document.getElementById('fechaPedido').value,
+          pago: document.getElementById('pago').value,
+          entrega: document.getElementById('entrega').value,
+          formaEntrega: document.getElementById('formaEntrega').value,
+          producto: document.getElementById('producto').value,
+          cantidad: parseInt(document.getElementById('cantidad').value),
+          estado: document.getElementById('estado').value
+        };
+        pedidos.push(nuevoPedido);
+        localStorage.setItem('pedidos', JSON.stringify(pedidos));
+        form.reset();
+        renderPedidos(true);
+        alert('Pedido agregado con éxito');
+      });
+    }
   </script>
 </body>
 </html>
