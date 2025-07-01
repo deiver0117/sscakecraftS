@@ -170,7 +170,7 @@
           <option value="Delivery">Delivery</option>
         </select>
         <label>Producto:</label>
-        <select id="producto" required></select>
+        <input type="text" id="producto" required />
         <label>Descripción:</label>
         <textarea id="descripcion" rows="3" required></textarea>
         <label>Cantidad:</label>
@@ -203,17 +203,6 @@
 
   <script>
     let pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
-    let productos = JSON.parse(localStorage.getItem('productos')) || [];
-
-    const selectProducto = document.getElementById('producto');
-    if (selectProducto) {
-      productos.forEach(p => {
-        const option = document.createElement('option');
-        option.value = p.tipo + ' - ' + p.tamaño;
-        option.textContent = `${p.tipo} (${p.tamaño}) - $${p.precio}`;
-        selectProducto.appendChild(option);
-      });
-    }
 
     function login() {
       const user = document.getElementById('usuario').value;
@@ -279,4 +268,3 @@
   </script>
 </body>
 </html>
-
