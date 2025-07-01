@@ -48,6 +48,7 @@
       color: white;
       text-decoration: none;
       font-weight: bold;
+      cursor: pointer;
     }
 
     main {
@@ -74,7 +75,7 @@
       font-weight: bold;
     }
 
-    input, select, button {
+    input, select, button, textarea {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
@@ -129,10 +130,10 @@
   <nav id="nav-menu">
     <h2>Sscakecraft</h2>
     <ul>
-      <li><a href="#">Pedidos</a></li>
-      <li><a href="#">Productos</a></li>
-      <li><a href="#">Inventario</a></li>
-      <li><a href="#">Facturación</a></li>
+      <li><a onclick="mostrarSeccion('pedidos')">Pedidos</a></li>
+      <li><a onclick="mostrarSeccion('productos')">Productos</a></li>
+      <li><a onclick="mostrarSeccion('inventario')">Inventario</a></li>
+      <li><a onclick="mostrarSeccion('facturacion')">Facturación</a></li>
       <li><a href="#" onclick="location.reload()">Cerrar sesión</a></li>
     </ul>
   </nav>
@@ -170,6 +171,8 @@
         </select>
         <label>Producto:</label>
         <select id="producto" required></select>
+        <label>Descripción:</label>
+        <textarea id="descripcion" rows="3" required></textarea>
         <label>Cantidad:</label>
         <input type="number" id="cantidad" value="1" min="1" required />
         <label>Estado:</label>
@@ -189,6 +192,7 @@
           <tr>
             <th>#</th>
             <th>Producto</th>
+            <th>Descripción</th>
             <th>Cantidad</th>
           </tr>
         </thead>
@@ -238,6 +242,7 @@
           tabla.innerHTML += `<tr>
             <td>${index + 1}</td>
             <td>${p.producto}</td>
+            <td>${p.descripcion || ''}</td>
             <td>${p.cantidad}</td>
           </tr>`;
         }
@@ -256,6 +261,7 @@
           entrega: document.getElementById('entrega').value,
           formaEntrega: document.getElementById('formaEntrega').value,
           producto: document.getElementById('producto').value,
+          descripcion: document.getElementById('descripcion').value,
           cantidad: parseInt(document.getElementById('cantidad').value),
           estado: document.getElementById('estado').value
         };
@@ -266,6 +272,11 @@
         alert('Pedido agregado con éxito');
       });
     }
+
+    function mostrarSeccion(seccion) {
+      alert('Esta funcionalidad aún no está implementada: ' + seccion);
+    }
   </script>
 </body>
 </html>
+
