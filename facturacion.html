@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sscakecraft - Facturación</title>
+<style>
+  :root {
+    --pink-light: #f8d7da;
+    --pink-medium: #f28ab2;
+    --pink-dark: #c73e62;
+    --gray-dark: #333;
+  }
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    height: 100vh;
+    background: var(--pink-light);
+  }
+  nav {
+    width: 220px;
+    background: var(--pink-medium);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
+  }
+  nav h2 {
+    margin: 0 0 1rem 0;
+    text-align: center;
+    font-weight: 700;
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.8rem 1.2rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  nav a:hover {
+    background: var(--pink-dark);
+  }
+  main {
+    flex-grow: 1;
+    padding: 1.5rem 2rem;
+    overflow-y: auto;
+    background: white;
+  }
+  header {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--pink-dark);
+  }
+  .factura {
+    border: 1px solid var(--pink-medium);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    background: #fff0f2;
+  }
+  button#logout-btn {
+    margin-top: auto;
+    background: #c73e62;
+    border: none;
+    color: white;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  button#logout-btn:hover {
+    background: #a72e4c;
+  }
+</style>
+</head>
+<body>
+
+<nav id="menu-lateral">
+  <h2>Sscakecraft</h2>
+  <a href="pedidos.html" id="link-pedidos">Pedidos</a>
+  <a href="productos.html" id="link-productos">Gestión de Productos</a>
+  <a href="inventario.html" id="link-inventario">Inventario</a>
+  <a href="facturacion.html" id="link-facturacion">Facturación</a>
+  <button id="logout-btn">Cerrar sesión</button>
+</nav>
+
+<main>
+  <header>Facturación</header>
+  <p>Lista de facturas basadas en pedidos realizados.</p>
+  <div id="facturas-list"></div>
+</main>
+
+<script>
+  const rol = sessionStorage.getItem('sscakecraft_rol');
+  if (!rol) {
+    alert('No estás autorizado. Por favor, ingresa primero.');
+    window.location.href = 'index.html';
+  }
+
+  // Solo admins pueden ver facturación
+  if (rol === 'cocinero') {
+    alert('No tienes permisos para ver facturación.');
+    window.location.href = 'pedidos.html';
+  }
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    if (confirm('¿Cerrar sesión?')) {
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    }
+  });
+
+  const pedidos = JSON.parse(localStorage.getItem('sscakecraft_pedidos')) || [];
+  const productos = JSON.parse(localStorage.getItem('sscakecraft_productos')) || [];
+  const facturasList = document.getElementById('facturas-list');
+
+  function renderFacturas() {
+    facturasList.innerHTML = '';
+    if (pedidos.length === 0) {
+      facturasList.innerHTML = '<p>No hay facturas registradas.</p>';
+      return;
+    }
+
+    pedidos.forEach(pedido => {
+      // Buscar producto para precio
+      const producto = productos.find(prod => prod.tipo === pedido.productoTipo && prod.tamano === pedido.productoTamano);
+      const precioUnit = producto ? producto.precio : 0;
+      const total = precioUnit * pedido.cantidad;
+
+      const div = document.createElement('div');
+      div.className = 'factura';
+      div.innerHTML = `
+        <strong>Factura #${pedido.numero}</strong><br/>
+        Cliente: ${pedido.cliente} <br/>
+        Teléfono: ${pedido.telefono} <br/>
+        Fecha Pedido: ${pedido.fechaPedido} <br/>
+        Forma Pago: ${pedido.formaPago} <br/>
+        Forma Entrega: ${pedido.formaEntrega} (${pedido.fechaEntrega})<br/>
+        Producto: ${pedido.producto} <br/>
+        Cantidad: ${pedido.cantidad} <br/>
+        <strong>Total: $${total.toFixed(2)}</strong>
+      `;
+      facturasList.appendChild(div);
+    });
+  }
+
+  renderFacturas();
+</script>
+
+</body>
+</html>

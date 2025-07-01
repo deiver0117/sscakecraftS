@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sscakecraft - Pedidos</title>
+  <style>
+    :root {
+      --pink-light: #f8d7da;
+      --pink-medium: #f28ab2;
+      --pink-dark: #c73e62;
+    }
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      height: 100vh;
+      background: var(--pink-light);
+    }
+    nav {
+      width: 220px;
+      background: var(--pink-medium);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 0;
+    }
+    nav h2 {
+      margin: 0 0 1rem 0;
+      text-align: center;
+      font-weight: 700;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.8rem 1.2rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    nav a:hover {
+      background: var(--pink-dark);
+    }
+    main {
+      flex-grow: 1;
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      background: white;
+    }
+    header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--pink-dark);
+    }
+    form label {
+      display: block;
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+    form input, form select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .submit-btn {
+      background-color: var(--pink-medium);
+      color: white;
+      padding: 0.7rem 1.2rem;
+      border: none;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .submit-btn:hover {
+      background-color: var(--pink-dark);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.6rem;
+    }
+    th {
+      background: var(--pink-light);
+    }
+    #logout-btn {
+      margin-top: auto;
+      background-color: var(--pink-dark);
+      color: white;
+      border: none;
+      padding: 0.7rem 1rem;
+      cursor: pointer;
+    }
+    #logout-btn:hover {
+      background-color: #a72e4c;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <h2>Sscakecraft</h2>
+    <a href="pedidos.html" id="link-pedidos">Pedidos</a>
+    <a href="productos.html" id="link-productos">Gestión de Productos</a>
+    <a href="inventario.html" id="link-inventario">Inventario</a>
+    <a href="facturacion.html" id="link-facturacion">Facturación</a>
+    <button id="logout-btn">Cerrar sesión</button>
+  </nav>
+
+  <main>
+    <header>Registrar Pedido</header>
+
+    <form id="form-pedido">
+      <label>Nombre y Apellido:</label>
+      <input type="text" id="cliente" required />
+
+      <label>Teléfono:</label>
+      <input type="tel" id="telefono" required />
+
+      <label>Fecha del pedido:</label>
+      <input type="date" id="fechaPedido" required />
+
+      <label>Forma de pago:</label>
+      <select id="formaPago" required>
+        <option value="">-- Selecciona --</option>
+        <option value="Efectivo">Efectivo</option>
+        <option value="Yappy">Yappy</option>
+      </select>
+
+      <label>Fecha y hora de entrega:</label>
+      <input type="datetime-local" id="fechaEntrega" required />
+
+      <label>Forma de entrega:</label>
+      <select id="formaEntrega" required>
+        <option value="">-- Selecciona --</option>
+        <option value="En local">En local</option>
+        <option value="Delivery">Delivery</option>
+      </select>
+
+      <label>Producto:</label>
+      <select id="productoSelect" required>
+        <option value="">-- Selecciona un producto --</option>
+      </select>
+
+      <label>Cantidad:</label>
+      <input type="number" id="cantidad" min="1" value="1" required />
+
+      <label>Estado:</label>
+      <select id="estado" required>
+        <option value="En proceso">En proceso</option>
+        <option value="Listo para preparar">Listo para preparar</option>
+        <option value="Completado">Completado</option>
+      </select>
+
+      <button type="submit" class="submit-btn">Agregar Pedido</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Producto</th>
+          <th>Entrega</th>
+          <th>Cantidad</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="pedidos-body"></tbody>
+    </table>
+  </main>
+
+  <script>
+    const rol = sessionStorage.getItem('sscakecraft_rol');
+    if (!rol) {
+      alert("No has iniciado sesión.");
+      window.location.href = 'index.html';
+    }
+
+    // Ocultar opciones según rol
+    if (rol === 'cocinero') {
+      document.getElementById('form-pedido').style.display = 'none';
+      document.getElementById('link-productos').style.display = 'none';
+      document.getElementById('link-inventario').style.display = 'none';
+      document.getElementById('link-facturacion').style.display = 'none';
+    }
+
+    // Cerrar sesión
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    });
+
+    const pedidos = JSON.parse(localStorage.getItem('sscakecraft_pedidos')) || [];
+    const productos = JSON.parse(localStorage.getItem('sscakecraft_productos')) || [];
+
+    const productoSelect = document.getElementById('productoSelect');
+    productos.forEach((prod, index) => {
+      const opt = document.createElement('option');
+      opt.value = index;
+      opt.textContent = `${prod.tipo} - ${prod.tamano} - $${prod.precio}`;
+      productoSelect.appendChild(opt);
+    });
+
+    function renderPedidos() {
+      const tbody = document.getElementById('pedidos-body');
+      tbody.innerHTML = '';
+
+      pedidos.forEach(pedido => {
+        if (rol === 'cocinero' && !["En proceso", "Listo para preparar"].includes(pedido.estado)) return;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${pedido.numero}</td>
+          <td>${pedido.cliente}</td>
+          <td>${pedido.producto}</td>
+          <td>${pedido.formaEntrega} (${pedido.fechaEntrega})</td>
+          <td>${pedido.cantidad}</td>
+          <td>${pedido.estado}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    renderPedidos();
+
+    document.getElementById('form-pedido').addEventListener('submit', e => {
+      e.preventDefault();
+
+      const cliente = document.getElementById('cliente').value;
+      const telefono = document.getElementById('telefono').value;
+      const fechaPedido = document.getElementById('fechaPedido').value;
+      const formaPago = document.getElementById('formaPago').value;
+      const fechaEntrega = document.getElementById('fechaEntrega').value;
+      const formaEntrega = document.getElementById('formaEntrega').value;
+      const productoIndex = document.getElementById('productoSelect').value;
+      const cantidad = parseInt(document.getElementById('cantidad').value);
+      const estado = document.getElementById('estado').value;
+
+      const producto = productos[productoIndex];
+      const numero = pedidos.length > 0 ? Math.max(...pedidos.map(p => p.numero)) + 1 : 1;
+
+      const nuevoPedido = {
+        numero,
+        cliente,
+        telefono,
+        fechaPedido,
+        formaPago,
+        fechaEntrega,
+        formaEntrega,
+        producto: `${producto.tipo} - ${producto.tamano}`,
+        productoTipo: producto.tipo,
+        productoTamano: producto.tamano,
+        cantidad,
+        estado
+      };
+
+      pedidos.push(nuevoPedido);
+      localStorage.setItem('sscakecraft_pedidos', JSON.stringify(pedidos));
+      renderPedidos();
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>
