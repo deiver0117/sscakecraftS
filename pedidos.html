@@ -60,7 +60,7 @@
       color: var(--rosa-oscuro);
     }
 
-    form, .tabla-container {
+    form, .tabla-container, .seccion {
       background: var(--blanco);
       padding: 20px;
       border-radius: 10px;
@@ -148,7 +148,7 @@
       <button onclick="login()">Entrar</button>
     </section>
 
-    <section id="admin-section" style="display:none">
+    <section id="pedidos" class="seccion" style="display:none">
       <h1>Registro de Pedidos</h1>
       <form id="pedido-form">
         <label>Nombre y Apellido del Cliente:</label>
@@ -185,7 +185,7 @@
       </form>
     </section>
 
-    <section id="tabla-section" class="tabla-container" style="display:none">
+    <section id="tabla-section" class="tabla-container seccion" style="display:none">
       <h2>Pedidos Registrados</h2>
       <table>
         <thead>
@@ -199,6 +199,21 @@
         <tbody id="tablaPedidos"></tbody>
       </table>
     </section>
+
+    <section id="productos" class="seccion" style="display:none">
+      <h2>Gestión de Productos</h2>
+      <p>Sección en construcción</p>
+    </section>
+
+    <section id="inventario" class="seccion" style="display:none">
+      <h2>Inventario</h2>
+      <p>Sección en construcción</p>
+    </section>
+
+    <section id="facturacion" class="seccion" style="display:none">
+      <h2>Facturación</h2>
+      <p>Sección en construcción</p>
+    </section>
   </main>
 
   <script>
@@ -209,14 +224,14 @@
       const pass = document.getElementById('contrasena').value;
       if (user === 'admin' && pass === 'admin123') {
         document.getElementById('login-section').style.display = 'none';
-        document.getElementById('admin-section').style.display = 'block';
-        document.getElementById('tabla-section').style.display = 'block';
         document.getElementById('nav-menu').style.display = 'block';
+        mostrarSeccion('pedidos');
+        document.getElementById('tabla-section').style.display = 'block';
         renderPedidos(true);
       } else if (user === 'cocinero' && pass === 'cocinero123') {
         document.getElementById('login-section').style.display = 'none';
-        document.getElementById('tabla-section').style.display = 'block';
         document.getElementById('nav-menu').style.display = 'block';
+        mostrarSeccion('tabla-section');
         renderPedidos(false);
       } else {
         alert('Usuario o contraseña incorrectos');
@@ -262,8 +277,10 @@
       });
     }
 
-    function mostrarSeccion(seccion) {
-      alert('Esta funcionalidad aún no está implementada: ' + seccion);
+    function mostrarSeccion(seccionId) {
+      document.querySelectorAll('.seccion').forEach(sec => sec.style.display = 'none');
+      const seccion = document.getElementById(seccionId);
+      if (seccion) seccion.style.display = 'block';
     }
   </script>
 </body>
