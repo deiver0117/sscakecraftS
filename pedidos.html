@@ -129,7 +129,7 @@
 <body>
   <nav id="nav-menu">
     <h2>Sscakecraft</h2>
-    <ul>
+    <ul id="menu-opciones">
       <li><a onclick="mostrarSeccion('pedidos')">Pedidos</a></li>
       <li><a onclick="mostrarSeccion('productos')">Productos</a></li>
       <li><a onclick="mostrarSeccion('inventario')">Inventario</a></li>
@@ -218,21 +218,36 @@
 
   <script>
     let pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
+    let esAdmin = false;
 
     function login() {
       const user = document.getElementById('usuario').value;
       const pass = document.getElementById('contrasena').value;
+      const menu = document.getElementById('menu-opciones');
+
       if (user === 'admin' && pass === 'admin123') {
+        esAdmin = true;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('nav-menu').style.display = 'block';
         mostrarSeccion('pedidos');
         document.getElementById('tabla-section').style.display = 'block';
         renderPedidos(true);
       } else if (user === 'cocinero' && pass === 'cocinero123') {
+        esAdmin = false;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('nav-menu').style.display = 'block';
         mostrarSeccion('tabla-section');
         renderPedidos(false);
+
+        // Ocultar accesos del cocinero
+        document.getElementById('pedidos').style.display = 'none';
+        document.getElementById('productos').style.display = 'none';
+        document.getElementById('inventario').style.display = 'none';
+        document.getElementById('facturacion').style.display = 'none';
+        menu.innerHTML = `
+          <li><a onclick="mostrarSeccion('tabla-section')">Pedidos</a></li>
+          <li><a href="#" onclick="location.reload()">Cerrar sesión</a></li>
+        `;
       } else {
         alert('Usuario o contraseña incorrectos');
       }
